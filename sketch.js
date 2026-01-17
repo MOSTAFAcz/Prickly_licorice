@@ -7,12 +7,6 @@ let keys = {};
 
 let score;
 
-function preload() {
-  apple = loadImage('./images/Apple.png');
-  basket = loadImage('/images/Basket.png');
-  menu = loadImage('/images/menu1.png');
-  bg = loadImage('/images/BG.png');
-}
 
 function setup() {
   createCanvas(400, 400);
@@ -23,9 +17,15 @@ function setup() {
 function update(){
   let x = random(30, width-30);
   let y = random(-100, -20);
-  let size = random(10, 30);
+  let size = random(15, 30);
+  let type = random(0, 10);
   if(frameCount % 10 === 0 && random(1) > 0.5){
-    objects.push(new FallingObject( x, y, size, 2, apple))
+    if(type < 7){
+      objects.push(new FallingObject( x, y, size, 2, apple, 1))
+    }else {
+      objects.push(new AppleCore( x, y, size, 3, apple2, -1))
+    }
+    
   }
   
   for (let i = objects.length - 1; i >= 0; i--) {
@@ -43,7 +43,7 @@ function update(){
     if (dx*dx + dy*dy < r*r){
       console.log("KOLIZE");
       objects.splice(i, 1);
-      score++;
+      score += c.reward;
     }
   }
 }
@@ -53,10 +53,13 @@ function draw() {
   imageMode(CORNER);
   image(bg, 0, 0, 400, 400);
   imageMode(CENTER);
-  image(menu, -5, -5, 176, 70);
-  textFont('Baloo');
-  fill(0);
-  text("score: " + score, 20, 20)
+  image(menu, 70, 20, 176, 70);
+  textFont(font);
+  fill(255);
+  stroke(0);
+  strokeWeight(5);
+  textSize(25);
+  text("SCORE: " + score, 5, 30)
   update();
     for(let obj of objects){
     obj.update();
